@@ -15,3 +15,6 @@ TJC4832T035_011 串口  /  Rx25,Tx26
 1. 修改 Download.cmd 中的对应的 Esptool 工具的路径
 2. 修改 Download.cmd 中的对应的串口名称
 3. 执行 Download.cmd 等待刷写完毕
+
+### 屏幕固件更新
+准备一块TF卡，格式化为Fat32格式，把Main.v0.99b.tft复制到TF卡，保证TF卡只有这一个文件，然后将TF卡插入屏幕，重新上电系统，等等屏幕固件写入完成后拔出TF卡，重新上电系统。
