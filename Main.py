@@ -42,6 +42,9 @@ print(' # >> System >> Initializing . . .');
 # wCount 内部计数器
 global wCount;
 wCount=0;
+# wSyncDateTime 同步时间计数器
+global wSyncDateTime;
+wSyncDateTime=0;
 # wPage 屏幕页面计数器
 global wPage;
 wPage=0;
@@ -273,7 +276,9 @@ while True:
 
     #循环主代码开始 >>>>>>>>
     wCount=wCount+1;
-    #更新时间和日期
+    wSyncDateTime=wSyncDateTime+1;
+
+    #刷新时间和日期显示
     utime.sleep_ms(50);
     vSJ='"'+str(Get_DateTime()[3])+'"';
     vRQz=str(Get_DateTime()[2]);
@@ -310,7 +315,12 @@ while True:
         wPage=4; wCount=2;
     uartHMI.any();
     
-    #2秒执行一次
+    #每6小时同步一次时间
+    if wSyncDateTime>=21600:
+        SyncDateTime(); #同步NTP
+        wSyncDateTime=0;
+
+    #每2秒执行一次获取传感器数据
     if wCount>=2:
         #读取PMS5003ST数据
         PMS_Data=read_PMS_line(uartPMS);
@@ -321,12 +331,12 @@ while True:
         PMSData['PM1.0']="{:.2f}".format(PMS_Data_Frame[3]);
         PMSData['PM2.5']="{:.2f}".format(PMS_Data_Frame[4]);
         PMSData['PM10']="{:.2f}".format(PMS_Data_Frame[5]);
-        PMSData['GTR0.3um']="{:.2f}".format(PMS_Data_Frame[6]);
-        PMSData['GTR0.5um']="{:.2f}".format(PMS_Data_Frame[7]);
-        PMSData['GTR1.0um']="{:.2f}".format(PMS_Data_Frame[8]);
-        PMSData['GTR2.5um']="{:.2f}".format(PMS_Data_Frame[9]);
-        PMSData['GTR5.0um']="{:.2f}".format(PMS_Data_Frame[10]);
-        PMSData['GTR10um']="{:.2f}".format(PMS_Data_Frame[11]);
+        PMSData['GTR0.3um']="{:.0f}".format(PMS_Data_Frame[6]);
+        PMSData['GTR0.5um']="{:.0f}".format(PMS_Data_Frame[7]);
+        PMSData['GTR1.0um']="{:.0f}".format(PMS_Data_Frame[8]);
+        PMSData['GTR2.5um']="{:.0f}".format(PMS_Data_Frame[9]);
+        PMSData['GTR5.0um']="{:.0f}".format(PMS_Data_Frame[10]);
+        PMSData['GTR10um']="{:.0f}".format(PMS_Data_Frame[11]);
         PMSData['HCHO']="{:.3f}".format(PMS_Data_Frame[12]/1000.0);
         PMSData['Temperature']="{:.1f}".format(PMS_Data_Frame[13]/10.0+TC);#加补偿温度
         PMSData['Humidity']="{:.1f}".format(PMS_Data_Frame[14]/10.0);
@@ -402,7 +412,18 @@ while True:
                 uartHMI.write(b'tFBHCHOT.txt="(未知)"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
                 uartHMI.write(b'tFBHCHOT.pco=65535'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
         elif wPage==2:
-            pass;
+            uartHMI.write(b'tPM1_0CF.txt="'+PMSData['PM1.0CF']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPM2_5CF.txt="'+PMSData['PM2.5CF']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPM10CF.txt="'+PMSData['PM10CF']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPM1_0.txt="'+PMSData['PM1.0']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPM2_5.txt="'+PMSData['PM2.5']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPM10.txt="'+PMSData['PM10']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS03.txt="'+PMSData['GTR0.3um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS05.txt="'+PMSData['GTR0.5um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS10.txt="'+PMSData['GTR1.0um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS25.txt="'+PMSData['GTR2.5um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS50.txt="'+PMSData['GTR5.0um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
+            uartHMI.write(b'tPMS100.txt="'+PMSData['GTR10um']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
         elif wPage==3:
             uartHMI.write(b'tFB2.txt="'+PMSData['PM2.5CF']+'"'); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
             uartHMI.write(b'add 12,0,'+str(PMSData['PM2.5QX'])); utime.sleep_us(2); uartHMI.write(b"\xff\xff\xff");
