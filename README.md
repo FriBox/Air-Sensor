@@ -1,6 +1,10 @@
 # FriBox Air Sensor
 Open Source Air Sensor （开源空气质量监测仪/传感器）<br>
 Esp32 +  Micropython + PMS5003ST + HmiLcd = FriBox Air Sensor<br>
+<br>
+<img src="/Demo/7.FriBoxAirSensor.v1.0.0.Demo6.png" width="480px">
+<img src="/Demo/0.FriBoxAirSensor.v1.0.0.渲染1.png" width="480px">
+<img src="/Demo/1.FriBoxAirSensor.v1.0.0.渲染2.png" width="480px">
 
 ### 硬件组成
 ESP32 -- Wifi蓝牙开发板  /  ESP32 Micropython 开发板<br>
