@@ -1,8 +1,8 @@
 #coding=UTF-8
 
-# FriBox Air Sensor v0.99b
+# FriBox Air Sensor v1.0.0
 # Create by Stream.Wang 2022-06-22
-# Modify by Stream.Wang 2022-05-23
+# Modify by Stream.Wang 2022-07-13
 
 #引入基本库
 import sys,os,utime,json,network,hmac,math,time,machine;
