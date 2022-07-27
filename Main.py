@@ -2,7 +2,7 @@
 
 # FriBox Air Sensor v1.1.0
 # Create by Stream.Wang 2022-06-22
-# Modify by Stream.Wang 2022-07-23
+# Modify by Stream.Wang 2022-07-27
 
 #引入基本库
 import sys,os,utime,json,network,hmac,math,time,datetime,machine;
